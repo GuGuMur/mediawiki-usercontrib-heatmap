@@ -7,6 +7,41 @@ interface CacheEntry<T> {
     data: T;
 }
 
+interface CompressedContributions {
+    startDate: string;
+    endDate: string;
+    counts: number[];
+}
+
+function compressContributions(contributions: Contribution[]): CompressedContributions {
+    if (contributions.length === 0) {
+        return { startDate: "", endDate: "", counts: [] };
+    }
+
+    return {
+        startDate: contributions[0].time,
+        endDate: contributions[contributions.length - 1].time,
+        counts: contributions.map((c) => c.count),
+    };
+}
+
+function decompressContributions(compressed: CompressedContributions): Contribution[] {
+    if (!compressed.startDate || compressed.counts.length === 0) {
+        return [];
+    }
+
+    const result: Contribution[] = [];
+    const current = new Date(compressed.startDate);
+
+    for (const count of compressed.counts) {
+        const dateStr = current.toISOString().split("T")[0];
+        result.push({ time: dateStr, count });
+        current.setDate(current.getDate() + 1);
+    }
+
+    return result;
+}
+
 let kvInstance: KVNamespace | null = null;
 
 function setKVNamespace(kv: KVNamespace): void {
@@ -25,7 +60,15 @@ async function getCacheEntry(key: string): Promise<CacheEntry<Contribution[]> | 
             return undefined;
         }
         const value = await kv.get(key, "json");
-        return value as CacheEntry<Contribution[]> | null ?? undefined;
+        if (!value) return undefined;
+
+        const cached = value as CacheEntry<CompressedContributions>;
+        const decompressed = decompressContributions(cached.data);
+        
+        return {
+            fetchAt: cached.fetchAt,
+            data: decompressed,
+        };
     } catch (error) {
         console.log(`[CACHE READ ERROR] ${key}: ${error instanceof Error ? error.message : "unknown"}`);
         return undefined;
@@ -40,12 +83,19 @@ async function setCacheEntry(key: string, value: CacheEntry<Contribution[]>): Pr
             return;
         }
 
-        const refreshTimeout = getRefreshTimeout();
-        const expirationTtl = Math.ceil(refreshTimeout / 1000); // Convert to seconds
+        const refreshTimeoutSeconds = getRefreshTimeout();
+        const expirationTtl = Math.max(60, refreshTimeoutSeconds);
+        console.log(expirationTtl)
 
-        await kv.put(key, JSON.stringify(value), {
+        const compressed: CacheEntry<CompressedContributions> = {
+            fetchAt: value.fetchAt,
+            data: compressContributions(value.data),
+        };
+
+        await kv.put(key, JSON.stringify(compressed), {
             expirationTtl,
         });
+
     } catch (error) {
         console.log(`[CACHE WRITE ERROR] ${key}: ${error instanceof Error ? error.message : "unknown"}`);
     }
@@ -98,7 +148,6 @@ function groupByDate(items: UserContribItem[], timezone: string): Record<string,
 
     for (const item of items) {
         const date = new Date(item.timestamp);
-        // Simple timezone handling - convert to specified timezone
         const formatter = new Intl.DateTimeFormat("en-CA", {
             timeZone: timezone,
             year: "numeric",

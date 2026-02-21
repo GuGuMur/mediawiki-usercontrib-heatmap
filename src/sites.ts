@@ -44,7 +44,7 @@ export function getColorScheme(name: string): string[] {
 
 export function getRefreshTimeout(): number {
   const cfg = loadConfig()
-  return (cfg.settings.RefreshTimeOut || 60) * 60 * 1000 // Convert to milliseconds
+  return (cfg.settings.RefreshTimeOut || 60) * 60  // Convert to seconds
 }
 
 export function getAllSites(): string[] {

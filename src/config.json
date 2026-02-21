@@ -1,7 +1,8 @@
 {
   "sites": {
     "zhwp": {
-      "api": "https://zh.wikipedia.org/w/api.php"
+      "api": "https://zh.wikipedia.org/w/api.php",
+      "timezone": "UTC"
     },
     "prts": {
       "api": "https://prts.wiki/api.php",

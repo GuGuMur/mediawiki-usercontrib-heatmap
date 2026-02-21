@@ -90,7 +90,7 @@ interface ApiResponse {
 }
 
 function parseTimezone(tz?: string): string {
-    return tz || "UTC";
+    return tz || "Asia/Shanghai"; 
 }
 
 function groupByDate(items: UserContribItem[], timezone: string): Record<string, number> {

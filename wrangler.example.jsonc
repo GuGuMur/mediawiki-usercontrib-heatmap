@@ -1,0 +1,17 @@
+{
+    "compatibility_flags": ["nodejs_compat"],
+    "compatibility_date": "2026-02-20",
+
+    "$schema": "node_modules/wrangler/config-schema.json",
+
+    "main": "src/index.ts",
+    "observability": {
+        "enabled": true,
+    },
+    "kv_namespaces": [
+        {
+            "binding": "mediawiki_usercontrib_heatmap",
+            "id": "<follow the readme>",
+        },
+    ],
+}

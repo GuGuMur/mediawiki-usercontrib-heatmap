@@ -1,0 +1,30 @@
+{
+  "sites": {
+    "zhwp": {
+      "api": "https://zh.wikipedia.org/w/api.php"
+    },
+    "prts": {
+      "api": "https://prts.wiki/api.php",
+      "color": "default",
+      "round": 13,
+      "timezone": "Asia/Shanghai"
+    }
+  },
+  "settings": {
+    "RefreshTimeOut": 60,
+    "colors": {
+      "default": [
+        "#4eb3d3",
+        "#2b8cbe",
+        "#0868ac",
+        "#084081"
+      ],
+      "arkstyle": [
+        "#808080",
+        "#606060",
+        "#404040",
+        "#000000"
+      ]
+    }
+  }
+}

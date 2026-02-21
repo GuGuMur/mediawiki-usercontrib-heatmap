@@ -2,7 +2,8 @@
   "name": "hono",
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev src/index.ts"
+    "dev": "wrangler dev src/index.ts",
+    "deploy": "wrangler deploy src/index.ts"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.4.2",

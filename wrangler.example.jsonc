@@ -1,4 +1,5 @@
 {
+    "name": "mediawiki-usercontrib-heatmap",
     "compatibility_flags": ["nodejs_compat"],
     "compatibility_date": "2026-02-20",
 
@@ -14,4 +15,6 @@
             "id": "<follow the readme>",
         },
     ],
+    "workers_dev": true,
+    "preview_urls": true,
 }

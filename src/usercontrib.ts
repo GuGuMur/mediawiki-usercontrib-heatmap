@@ -85,7 +85,6 @@ async function setCacheEntry(key: string, value: CacheEntry<Contribution[]>): Pr
 
         const refreshTimeoutSeconds = getRefreshTimeout();
         const expirationTtl = Math.max(60, refreshTimeoutSeconds);
-        console.log(expirationTtl)
 
         const compressed: CacheEntry<CompressedContributions> = {
             fetchAt: value.fetchAt,
@@ -238,7 +237,8 @@ export async function getUserContributions(c: Context, siteName: string, usernam
     }
 
     const cacheKey = `${siteName}:${username}`;
-    const timeout = getRefreshTimeout();
+    const timeoutSeconds = getRefreshTimeout();
+    const timeout = timeoutSeconds * 1000; // convert seconds -> milliseconds
 
     const cached = await getCacheEntry(cacheKey);
     const now = Date.now();

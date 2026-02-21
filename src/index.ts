@@ -55,7 +55,12 @@ app.get("/generate", async (c) => {
             vertical,
         });
 
-        return c.html(svg);
+        return new Response(svg, {
+            status: 200,
+            headers: {
+                'Content-Type': 'image/svg+xml',
+            },
+        });
     } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown error";
         return c.json({ error: message }, 500);
